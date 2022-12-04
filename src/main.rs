@@ -1,5 +1,4 @@
-use std::{collections::{HashSet, HashMap, hash_map::RandomState}};
-
+use std::collections::{btree_set::Intersection, hash_map::RandomState, HashMap, HashSet};
 
 fn main() {
     // there's gotta be a less verbose way to do this...
@@ -55,16 +54,21 @@ fn main() {
         ('W', 49),
         ('X', 50),
         ('Y', 51),
-        ('Z', 52),          
+        ('Z', 52),
     ]);
     let input = include_str!("input.txt");
     let lines: Vec<&str> = input.lines().collect();
-    let sum: i32 = 0;
+    let mut sum: i32 = 0;
     for i in (0..lines.len()).step_by(3) {
         let first: HashSet<char, RandomState> = HashSet::from_iter(lines.get(i).unwrap().chars());
-        let second: HashSet<char, RandomState> = HashSet::from_iter(lines.get(i+1).unwrap().chars());
-        let third: HashSet<char, RandomState> = HashSet::from_iter(lines.get(i+2).unwrap().chars());
-        let intersection: Vec<&char> = first.intersection(&second).intersection(&third).collect();
+        let second: HashSet<char, RandomState> =
+            HashSet::from_iter(lines.get(i + 1).unwrap().chars());
+        let third: HashSet<char, RandomState> =
+            HashSet::from_iter(lines.get(i + 2).unwrap().chars());
+        let first_second_intersection: Vec<&char> = first.intersection(&second).collect();
+        let first_second: HashSet<char, RandomState> =
+            HashSet::from_iter(first_second_intersection.into_iter().map(|c| c.to_owned()));
+        let intersection: Vec<&char> = first_second.intersection(&third).collect();
         println!("intersection: {:?} ", intersection);
         assert!(intersection.len() == 1);
         let c = intersection.get(0).unwrap();
